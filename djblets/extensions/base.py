@@ -459,13 +459,6 @@ class ExtensionManager(object):
 
         found_extensions = {}
 
-        # Reload pkg_resources
-        import pkg_resources
-        if pkg_resources:
-            del pkg_resources
-            del sys.modules['pkg_resources']
-            import pkg_resources
-
         for entrypoint in self._entrypoint_iterator():
             registered_ext = None
 

@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+{% load adminmedia admin_list djblets_extensions i18n staticfiles %}
+
+{% block title %}{% trans "Add Extensions" %} {{block.super}}{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+<link rel="stylesheet" type="text/css" href="{% static "djblets/css/admin.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "djblets/css/extensions.css" %}" />
+
+{{block.super}}
+{% endblock %}
+
+{% block content %}
+
+<h1 class="title">{% trans "Add Extensions" %}</h1>
+
+<div id="content-main">
+
+  <form action="manager" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+  </form>
+</div>
+
+{% if user_message %}
+  {% if user_message == 1 %}
+    <b>Extension installed. You may now <a href=".">activate</a> it.<b>
+  {% else %}
+    <b>{{ user_message }}</b>
+  {% endif %}
+{% endif %}
+
+{% endblock %}

@@ -40,9 +40,8 @@ def _has_disabled_requirements(extension):
 @staff_member_required
 def extension_list(request, extension_manager,
                    template_name='extensions/extension_list.html'):
-    # Refresh the extension list; refreshing the cache to make sure new
-    # installed/removed extensions reflect.
-    extension_manager.load(True)
+    # Refresh the extension list.
+    extension_manager.load()
 
     return render_to_response(template_name, RequestContext(request, {
         'extensions': [

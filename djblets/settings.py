@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'djblets.auth',
     'djblets.datagrid',
     'djblets.extensions',
+    'djblets.exthandler',
     'djblets.feedview',
     'djblets.gravatars',
     'djblets.log',
