@@ -42,7 +42,7 @@ def add_extension(request, extension_manager,
                 install_error = True
                 error = e
 
-            if  not distribution_error and not install_error:
+            if not distribution_error and not install_error:
                 # At this point, everything went okay with the installation.
                 install_success = True
 
@@ -50,9 +50,9 @@ def add_extension(request, extension_manager,
         form = AddExtensionForm()
 
     return render_to_response(template_name, RequestContext(request, {
-            'distribution_error': distribution_error,
-            'error': error,
-            'form': form,
-            'install_error': install_error,
-            'install_success': install_success,
-        }))
+        'distribution_error': distribution_error,
+        'error': error,
+        'form': form,
+        'install_error': install_error,
+        'install_success': install_success,
+    }))
