@@ -14,22 +14,20 @@
 {% block content %}
 
 <h1 class="title">{% trans "Add Extensions" %}</h1>
-
 <div id="content-main">
-
-  <form action="manager" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
-  </form>
+ <form action="browser" method="post">
+  {% csrf_token %}
+  {{form.as_p}}
+  <input type="submit" value="Submit" />
+ </form>
 </div>
-
-{% if user_message %}
-  {% if user_message == 1 %}
-    <b>Extension installed. You may now <a href=".">activate</a> it.<b>
-  {% else %}
-    <b>{{ user_message }}</b>
-  {% endif %}
+{% if distribution_error %}
+{%  trans "An error occurred: package name does not match the resource downloaded." %}
 {% endif %}
-
+{% if install_error %}
+{%  trans "An error occurred: " %} {{error}}
+{% endif %}
+{% if install_success %}
+{%  trans "Extension installed. You may now activate it." %}
+{% endif %}
 {% endblock %}
