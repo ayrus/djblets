@@ -1,6 +1,7 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
+from djblets.extensionbrowser.base import ExtensionStoreQuery
 from djblets.extensionbrowser.forms import AddExtensionForm
 import pkg_resources
 from setuptools.command import easy_install
@@ -56,3 +57,14 @@ def add_extension(request, extension_manager,
         'install_error': install_error,
         'install_success': install_success,
     }))
+
+@staff_member_required
+def browse_extensions(request, extension_manager,
+                    template_name='extensionbrowser/extension_browser.html'):
+
+    store = ExtensionStoreQuery("http://andromeda.ayrus.net/test.html")
+    extensions = store.populate_extensions(None);
+
+    return render_to_response(template_name, RequestContext(request, {
+        'extensions': extensions
+        }))
