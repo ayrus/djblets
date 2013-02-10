@@ -6,19 +6,63 @@
 {% block extrahead %}
 <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
 <link rel="stylesheet" type="text/css" href="{% static "djblets/css/admin.css" %}" />
-<link rel="stylesheet" type="text/css" href="{% static "djblets/css/extensions.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "djblets/css/extensionbrowser.css" %}" />
 
 {{block.super}}
 {% endblock %}
+{% block bodyclass %}{{block.super}} change-form{% endblock %}
 
 {% block content %}
-
 <h1 class="title">{% trans "Browse Extensions" %}</h1>
 <div id="content-main">
-<br/><br/>
-ID | Name | Description<br/><br/>
-{% for id, ext in extensions.items %}
-{{ id }} : {{ ext.name }} : {{ ext.description }}<br/><br/>
-{% endfor %}
+ <form action="browser" method="post">
+  <fieldset class="module aligned wide">
+   <h2>Search</h2>
+    <div class="form-row search-query{% if form.query.errors %} error{% endif %}" id="row-query">
+     {{form.query.errors}}
+     <label for="id_query" class="required">{{form.query.label}}</label>
+     {{form.query}}
+     <p class="help">
+      Enter some search keywords.
+     </p>
+   </div>
+
+   <div class="submit-row">
+    <input type="submit" value="{% trans "Search" %}" class="default" />
+    <div style="clear: both"></div>
+   </div>
+  </fieldset>
+ </form>
+{% if results %}
+  <div id="results_container">
+   <h2>Search Results</h2>
+   <ul id="results">
+    <li id="results_header" class="header clear">
+     <div class="item_name item_start">Extension Name</div>
+     <div class="item_version">Version</div>
+     <div class="item_author">Author</div>
+     <div class="item_description">Description</div>
+    </li>
+{%  for id, ext in results.items %}
+     <li id="result_{{id}}" class="clear">
+       <div class="item_name item_start">
+       	{{ext.name}}
+       	<span class="item_actions">
+         <a href="#">Details</a> | 
+{%       if not ext.installed %}        
+          <a href="#">Install</a>
+{%       else %}
+          <span class="item_installed">Installed</span>
+{%       endif %}        
+        </span>
+       </div>
+       <div class="item_version">{{ext.version}}</div>
+       <div class="item_author">{{ext.author}}</div>
+       <div class="item_description">{{ext.get_short_description}}</div>
+     </li>
+{%  endfor %}
+   </ul>
+  </div>
+{% endif %}
 </div>
 {% endblock %}

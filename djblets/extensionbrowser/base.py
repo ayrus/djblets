@@ -1,3 +1,5 @@
+import pkg_resources
+from setuptools.command import easy_install
 import simplejson as json
 from urllib import urlencode
 from urllib2 import URLError, Request, urlopen
@@ -10,13 +12,14 @@ class Extension(object):
     a list on the view. An extension can be installed with a member 
     function.
     """
-    def __init__(self, name, description, install_url, package_name):
+    def __init__(self, name, description, version, author, installed):
         self.name = name
         self.description = description
-        self.install_url = install_url
-        self.package_name = package_name
+        self.version = version
+        self.author = author
+        self.installed = installed
 
-    def install_extension(self, extension_manager):
+    '''def install_extension(self, extension_manager):
         """ Install an extension.
 
         Install the extension invovled with this instance of the class.
@@ -32,7 +35,16 @@ class Extension(object):
         pkg_resources.working_set.add(dist)
 
         # Refresh the extension manager.
-        extension_manager.load(True)
+        extension_manager.load(True)'''
+
+    def get_short_description(self):
+        if(len(self.description) > 258):
+            return self.description[:258] + '...'
+
+        return self.description
+
+    def set_installed(self, installed):
+        self.installed = installed
 
 class ExtensionStoreQuery(object):
     """Allows querying the extension store for a possible list of extensions.
@@ -42,8 +54,9 @@ class ExtensionStoreQuery(object):
     parsed into a dictionary of Extension class objects.
     """
 
-    def __init__(self, store_url):
+    def __init__(self, store_url, extension_manager):
         self.store_url = store_url
+        self.installed_extensions = [ext.name for ext in extension_manager._entrypoint_iterator()]
 
     def _query(self, params):
         """Query the store.
@@ -55,6 +68,8 @@ class ExtensionStoreQuery(object):
         if params:
             url_params = urlencode(params)
             request_url = self.store_url + '?' + url_params
+
+        print request_url
 
         request = Request(request_url)
 
@@ -80,7 +95,9 @@ class ExtensionStoreQuery(object):
         extensions = response['extensions']
 
         for ext in extensions:
+            installed = ext['package_name'] in self.installed_extensions
             extlist[ext['id']] = Extension(ext['name'], ext['description'],
-                                           ext['install_url'], ext['package_name'])
+                                           ext['version'], ext['author'],
+                                           installed)
 
         return extlist
